@@ -1,1 +1,1 @@
-web: gunicorn QuizAppProject.wsgi
+web: gunicorn QuizAppProject.wsgi --log-file -
