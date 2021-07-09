@@ -52,22 +52,61 @@
       color: rgb(243, 30, 30);
     }
 
-    #result,#time,#finish-quiz{
+    #result,
+    #time,
+    #finish-quiz {
       display: none;
     }
 
-    .buttons button{
+    .buttons button {
       padding: 8px;
       padding-left: 10px;
       padding-right: 10px;
       margin: 35px;
       font-weight: 600;
     }
+
+    @media only screen and (max-width:600px) {
+      .quiz-card .card {
+        width: 80%;
+        padding: 15px;
+        margin-top: 50px;
+      }
+
+      .buttons button {
+        padding: 5px;
+        padding-left: 8px;
+        padding-right: 8px;
+        margin: 15px;
+        font-weight: 600;
+        font-size: small;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <h2>{{title}}</h2>
+  <header>
+    <div class="nav-bar">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="#">{{ title }}</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto">
+              <li>
+                <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
   <div class="quiz-card">
     <div class="card align-content-center">
       <div class="question">
@@ -85,15 +124,15 @@
       </div>
       <div class="buttons">
         <div class="next-btn">
-          <button id="next" class="btn btn-success" onclick="nextQuestion()">Next Question</button>
+          <button id="next" class="btn btn-success disabled" onclick="nextQuestion()">Next Question</button>
         </div>
         <div class="submit-btn">
           <form action="/quiz/{{ id }}/{{ s_id }}/result" method="post">
             {% csrf_token %}
             <input type="text" name="result" id="result" />
             <input type="text" name="time" id="time" />
-            <input type="submit" value="" id="finish-quiz"/>
-            <button id="finish" class="btn btn-danger disabled" >Finish Quiz</button>
+            <input type="submit" value="" id="finish-quiz" />
+            <button id="finish" class="btn btn-danger disabled">Finish Quiz</button>
           </form>
         </div>
       </div>
@@ -105,7 +144,6 @@
   </div>
 </body>
 <script>
-
   var start_time = new Date().getTime()
   var end_time = 0
   var data = JSON.parse("{{ data | escapejs }}")
@@ -114,10 +152,10 @@
   var currentQuestion = 0
   var result = 0
 
-  document.getElementById('finish').onclick = function Clicked(){
+  document.getElementById('finish').onclick = function Clicked() {
     end_time = new Date().getTime()
     // time = Math.floor((start_time - end_time)/60000)
-    time = ((start_time - end_time)/60000).toFixed(2)
+    time = ((end_time - start_time) / 60000).toFixed(2)
     document.getElementById('time').value = time
     document.getElementById('finish-quiz').click()
   }
@@ -158,7 +196,7 @@
     document.getElementById('opt-l-3').innerHTML = Questions[currentQuestion]['options'][2]
     document.getElementById('opt-l-4').innerHTML = Questions[currentQuestion]['options'][3]
 
-    console.log(Questions[currentQuestion]['options'][3]);
+    document.getElementById('next').classList.add('disabled')
   }
 
   function checkAnswer(radio) {
@@ -176,6 +214,10 @@
     option2.disabled = true
     option3.disabled = true
     option4.disabled = true
+
+    if(currentQuestion != 9){
+      document.getElementById('next').classList.remove('disabled')
+    }
   }
 
   function nextQuestion() {
@@ -202,7 +244,6 @@
       showQuiz()
     }
   }
-
 </script>
 
 </html>

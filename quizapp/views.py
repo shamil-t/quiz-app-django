@@ -1,4 +1,3 @@
-from django.core.checks import messages
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from .models import User_Model,Quiz_Model,Quiz_result
@@ -81,10 +80,11 @@ def add_quiz(request):
 
 def start_quiz(request, id, s_id):
 
-    Quiz = Quiz_Model.objects.get(quiz_type=id)
+    Quiz = Quiz_Model.objects.get(id=id)
     title = Quiz.quiz_name
+    q_id = Quiz.quiz_type
 
-    url = 'https://opentdb.com/api.php?amount=10&category='+str(id)+'&difficulty=medium&type=multiple'
+    url = 'https://opentdb.com/api.php?amount=10&category='+str(q_id)+'&difficulty=medium&type=multiple'
     data = requests.get(url)
     data_json = data.json()
     question_set = data_json['results']
@@ -118,12 +118,12 @@ def quiz_result(request, q_id, s_id):
     quiz = Quiz_result(quiz_type=q_id, s_id=s_id, result=result)
     quiz.save()
 
-    Quiz_name = Quiz_Model.objects.get(quiz_type=q_id).quiz_name
+    Quiz_name = Quiz_Model.objects.get(id=q_id).quiz_name
     Std_name = User_Model.objects.get(id=s_id)
 
     return render(request, 'result.html', 
     {
-        'result':result, 
+        'result':int(result),
         'q_name':Quiz_name,
         's_name':Std_name,
         'time':time

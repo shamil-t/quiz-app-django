@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-3yfx!8a6iv^1du4_r2_-h@53uw7w$_vwaa3cfd%i=g&0^=%2mt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['shamil-quiz-app-django.herokuapp.com']
+ALLOWED_HOSTS = ['shamil-quiz-app-django.herokuapp.com','localhost']
 
 
 # Application definition
