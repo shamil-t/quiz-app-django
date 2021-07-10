@@ -1,6 +1,6 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
-from .models import User_Model,Quiz_Model,Quiz_result
+from .models import User_Model, Quiz_Model, Quiz_result
 
 import requests
 import random
@@ -10,6 +10,7 @@ from json import dumps
 def home(request):
 
     return render(request, 'home.html')
+
 
 def quiz_home(request):
     reg_no = request.POST['reg_no']
@@ -23,7 +24,7 @@ def quiz_home(request):
         if User.pwd == pwd:
             name = User.user_name
             Quiz = Quiz_Model.objects.all()
-            return render(request, 'quiz_home.html', {'name': name,'quiz':Quiz,'s_id':User.id})
+            return render(request, 'quiz_home.html', {'name': name, 'quiz': Quiz, 's_id': User.id})
         else:
             msg = 'Incorrect Password'
             return render(request, 'home.html', {'error': msg})
@@ -31,13 +32,16 @@ def quiz_home(request):
         msg = 'User Not Registered Please Register'
         return render(request, 'home.html', {'error': msg})
 
+
 def register(request):
 
     return render(request, 'register.html')
 
+
 def admin(request):
 
     return render(request, 'admin.html')
+
 
 def register_user(request):
     u_name = request.POST['name']
@@ -48,13 +52,24 @@ def register_user(request):
     reg_no.strip()
     pwd.strip()
 
+    if reg_no.isnumeric() and len(reg_no) == 6:
+        pass
+    else:
+        return render(request, 'register.html', {'error': 'Invalid Register Number'})
+
+    if len(pwd) >= 8:
+        pass
+    else:
+        return render(request, 'register.html', {'error': 'Enter a valid Password'})
+
     if User_Model.objects.filter(reg_no=reg_no).exists():
-        return HttpResponse('User already Registered...!')
+        return render(request, 'register.html', {'error': 'User already Registered'})
     else:
         user = User_Model(user_name=u_name, reg_no=reg_no, pwd=pwd)
         user.save()
         msg = 'User Registered Successfully, Now Login to your Account'
         return render(request, 'home.html', {'message': msg})
+
 
 def college_home(request):
     pwd = request.POST['pwd']
@@ -66,17 +81,20 @@ def college_home(request):
         msg = ' Admin ID = "admin" and password = "admin" '
         return render(request, 'admin.html', {'message': msg})
 
+
 def add_quiz(request):
-  q_name = request.POST['q_name']
-  id = request.POST['id']
-  s_date = request.POST['s_date']
-  e_date = request.POST['e_date']
+    q_name = request.POST['q_name']
+    id = request.POST['id']
+    s_date = request.POST['s_date']
+    e_date = request.POST['e_date']
 
-  Quiz = Quiz_Model(quiz_name=q_name, quiz_type=id, start_date=s_date, end_date=e_date)
-  Quiz.save()
+    Quiz = Quiz_Model(quiz_name=q_name, quiz_type=id,
+                      start_date=s_date, end_date=e_date)
+    Quiz.save()
 
-  msg = 'Quiz Added Succesfully...!'
-  return render(request, 'college.html',{'message':msg})
+    msg = 'Quiz Added Succesfully...!'
+    return render(request, 'college.html', {'message': msg})
+
 
 def start_quiz(request, id, s_id):
 
@@ -84,7 +102,8 @@ def start_quiz(request, id, s_id):
     title = Quiz.quiz_name
     q_id = Quiz.quiz_type
 
-    url = 'https://opentdb.com/api.php?amount=10&category='+str(q_id)+'&difficulty=medium&type=multiple'
+    url = 'https://opentdb.com/api.php?amount=10&category=' + \
+        str(q_id)+'&difficulty=medium&type=multiple'
     data = requests.get(url)
     data_json = data.json()
     question_set = data_json['results']
@@ -93,7 +112,7 @@ def start_quiz(request, id, s_id):
     options = []
     answer = []
 
-    for i in range( len(question_set)):
+    for i in range(len(question_set)):
         questions.append(question_set[i]['question'])
         answer.append(question_set[i]['correct_answer'])
         option = question_set[i]['incorrect_answers']
@@ -104,27 +123,45 @@ def start_quiz(request, id, s_id):
     DATA = {
         'questions': questions,
         'options': options,
-        'answer' : answer
+        'answer': answer
     }
 
     DATA_JSON = dumps(DATA)
 
-    return render(request, 'start_quiz.html', {'data': DATA_JSON, 'title':title, 'id':id, 's_id':s_id})
+    return render(request, 'start_quiz.html', {'data': DATA_JSON, 'title': title, 'id': id, 's_id': s_id})
+
 
 def quiz_result(request, q_id, s_id):
     result = request.POST['result']
     time = request.POST['time']
 
-    quiz = Quiz_result(quiz_type=q_id, s_id=s_id, result=result)
-    quiz.save()
+    q = Quiz_result.objects.get(quiz_type=q_id)
+    if q.s_id != s_id:
+        quiz = Quiz_result(quiz_type=q_id, s_id=s_id, result=result)
+        quiz.save()
 
-    Quiz_name = Quiz_Model.objects.get(id=q_id).quiz_name
-    Std_name = User_Model.objects.get(id=s_id)
+        Quiz_name = Quiz_Model.objects.get(id=q_id).quiz_name
+        Std_name = User_Model.objects.get(id=s_id)
 
-    return render(request, 'result.html', 
-    {
-        'result':int(result),
-        'q_name':Quiz_name,
-        's_name':Std_name,
-        'time':time
-    })
+        context = {
+            'result': int(result),
+            'q_name': Quiz_name,
+            's_name': Std_name,
+            'time': time
+        }
+        return render(request, 'result.html',context)
+    else:
+        return HttpResponse('You Already Attended The Quiz')
+
+
+def student_results(request):
+    list = []
+    Result = Quiz_result.objects.all()
+
+    for r in Result:
+        result = r.get_all_results()
+        list.append(result)
+
+    print(list)
+
+    return render(request, 'student_result.html', {'results': list})

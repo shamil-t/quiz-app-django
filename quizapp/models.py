@@ -17,12 +17,27 @@ class Quiz_Model(models.Model):
   end_date = models.DateTimeField()
 
   def __str__(self):
-      return str(self.quiz_type)
+      return str(self.id)
 
 class Quiz_result(models.Model):
   quiz_type = models.IntegerField(default=0)
   s_id = models.IntegerField(default=0)
   result = models.IntegerField(default=0)
+
+  def get_all_results(self):
+    s_name = User_Model.objects.get(id = self.s_id).user_name
+    reg_no = User_Model.objects.get(id = self.s_id).reg_no
+    q_name = Quiz_Model.objects.get(id = self.quiz_type).quiz_name
+
+    result = {
+      'name':s_name,
+      'reg_no':reg_no,
+      'quiz':q_name,
+      'result':self.result
+    }
+
+    return result
+
 
   def __str__(self):
       return str(self.result)

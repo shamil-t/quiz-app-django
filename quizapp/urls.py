@@ -11,4 +11,5 @@ urlpatterns = [
     path('add_quiz', views.add_quiz, name='add_quiz'),
     path('start_quiz/<int:id>/<int:s_id>/', views.start_quiz, name='start_quiz'),
     path('quiz/<int:q_id>/<int:s_id>/result', views.quiz_result, name='result'),
+    path('college-admin/std-results', views.student_results, name='std-result'),
 ]

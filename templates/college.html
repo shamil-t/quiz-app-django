@@ -15,10 +15,12 @@
   <title>College-Admin</title>
 </head>
 <style>
-  *,body{
+  *,
+  body {
     margin: 0px;
     padding: 0px;
   }
+
   .add-quiz {
     width: 100%;
     height: fit-content;
@@ -40,15 +42,15 @@
     font-size: 18px;
   }
 
-  label{
+  label {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 600;
     padding: 5px;
     color: rgb(75, 74, 74);
   }
 
-  #card-quiz{
-    width: 50%; 
+  #card-quiz {
+    width: 50%;
     padding: 25px;
   }
 
@@ -56,8 +58,9 @@
     .add-quiz form {
       width: 100%;
     }
-    #card-quiz{
-      width: 85%; 
+
+    #card-quiz {
+      width: 85%;
       padding: 25px;
     }
   }
@@ -68,7 +71,7 @@
     <div class="nav-bar">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-          <a class="navbar-brand" href="#">College Dashboard</a>
+          <a class="navbar-brand" href="#">College Admin</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -76,6 +79,7 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto">
+              <li><a class="nav-link" href="college-admin/std-results"><i class="fas fa-chart-bar"></i> Results</a></li>
               <li><a class="nav-link" href="college_admin"><i class="fas fa-sign-out"></i> Logout</a></li>
             </ul>
           </div>
@@ -91,13 +95,12 @@
       <form action="add_quiz" method="post">
         {% csrf_token %}
         <label for="q_name" class="form-label">Quiz name </label>
-        <input name="q_name" type="text" class="form-control" id="q_name"
-          placeholder="Enter Quiz Name" required />
-        
+        <input name="q_name" type="text" class="form-control" id="q_name" placeholder="Enter Quiz Name" required />
+
         <label for="s_date" class="form-label">Quiz Start Date</label>
         <input name="s_date" type="datetime-local" class="form-control" id="s_date"
           placeholder="Enter Your Register Number" required />
-        
+
         <label for="e_date" class="form-label">Quiz End Date</label>
         <input name="e_date" type="datetime-local" class="form-control" id="e_date"
           placeholder="Enter Your Register Number" required />
