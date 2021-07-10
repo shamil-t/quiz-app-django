@@ -22,6 +22,11 @@
     align-items: center;
   }
 
+  .pass{
+    color: rgb(255, 255, 255);
+    text-align: center;
+    font-weight: 600;
+  }
   .results table {
     width: 70%;
     margin-top: 50px;
@@ -50,7 +55,7 @@
     </div>
   </header>
   <div class="results">
-    <table class="table table-dark table-responsive-xl">
+    <table class="table table-dark table-responsive-sm">
       <thead class="">
         <th>#</th>
         <th>Reg.No</th>
@@ -62,22 +67,22 @@
       <tbody>
         {% for r in results %}
           {% if r.result >= 5 %}
-          <tr class="table-active">
-            <td>{{ forloop.counter }}</td>
+          <tr class="table-success">
+            <th>{{ forloop.counter }}</th>
             <td>{{ r.reg_no }}</td>
             <td>{{ r.name }}</td>
             <td>{{ r.quiz }}</td>
             <td>{{ r.result }}</td>
-            <td>Pass</td>
+            <td class="pass" style="background-color: #198754;">Pass</td>
           </tr>
           {% else %}
-          <tr class="">
+          <tr class="table-danger">
             <td>{{ forloop.counter }}</td>
             <td>{{ r.reg_no }}</td>
             <td>{{ r.name }}</td>
             <td>{{ r.quiz }}</td>
             <td>{{ r.result }}</td>
-            <td>Failed</td>
+            <td class="pass" style="background-color: #dc3545;">Failed</td>
           </tr>
           {% endif %}
         {% endfor %}
