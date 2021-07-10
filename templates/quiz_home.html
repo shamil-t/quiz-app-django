@@ -36,6 +36,14 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    .message {
+    margin-top: 35px;
+    color: rgb(25, 131, 25);
+    font-weight: 600;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+  }
+
     @media only screen and (max-width:768px) {
       .quiz-cards{
         width: 100%;
@@ -90,10 +98,13 @@
           <br>
           End Date {{ quiz.end_date }}
         </div>
-        <a href="start_quiz/{{ quiz.id }}/{{ s_id }}" class="btn btn-danger" style="margin-top: 15px;">Start Quiz</a>
+        <a href="/start_quiz/{{ quiz.id }}/{{ s_id }}" class="btn btn-danger" style="margin-top: 15px;">Start Quiz</a>
       </div>
     </div>
     {% endfor %}
+  </div>
+  <div class="message">
+    <p class="text-center">{{ message }} </p>
   </div>
 </body>
 

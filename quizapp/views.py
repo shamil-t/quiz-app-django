@@ -24,7 +24,7 @@ def quiz_home(request):
         if User.pwd == pwd:
             name = User.user_name
             Quiz = Quiz_Model.objects.all()
-            return render(request, 'quiz_home.html', {'name': name, 'quiz': Quiz, 's_id': User.id})
+            return render(request, 'quiz_home.html', {'quiz': Quiz, 's_id': User.id})
         else:
             msg = 'Incorrect Password'
             return render(request, 'home.html', {'error': msg})
@@ -72,8 +72,8 @@ def register_user(request):
 
 
 def college_home(request):
-    pwd = request.POST['pwd']
-    id = request.POST['id']
+    pwd = request.GET['pwd']
+    id = request.GET['id']
 
     if id == 'admin' and pwd == 'admin':
         return render(request, 'college.html')
@@ -135,13 +135,14 @@ def quiz_result(request, q_id, s_id):
     result = request.POST['result']
     time = request.POST['time']
 
+    Quiz = Quiz_Model.objects.all()
     q = Quiz_result.objects.get(quiz_type=q_id)
+    Quiz_name = Quiz_Model.objects.get(id=q_id).quiz_name
+    Std_name = User_Model.objects.get(id=s_id)
+
     if q.s_id != s_id:
         quiz = Quiz_result(quiz_type=q_id, s_id=s_id, result=result)
         quiz.save()
-
-        Quiz_name = Quiz_Model.objects.get(id=q_id).quiz_name
-        Std_name = User_Model.objects.get(id=s_id)
 
         context = {
             'result': int(result),
@@ -151,7 +152,7 @@ def quiz_result(request, q_id, s_id):
         }
         return render(request, 'result.html',context)
     else:
-        return HttpResponse('You Already Attended The Quiz')
+        return render(request, 'quiz_home.html', {'quiz': Quiz, 's_id': s_id,'message':'You already Attended The Quiz Try new One'})
 
 
 def student_results(request):
