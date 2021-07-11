@@ -20,42 +20,77 @@
       justify-content: center;
       align-content: space-between;
     }
+
+    .quiz {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      flex-direction: column;
+    }
+
     .quiz-cards .card {
       width: 18rem;
       padding: 10px;
       margin: 15px;
     }
-    .date{
+
+    .date {
       margin-top: 15px;
       font-size: 14px;
     }
 
-    .no-quiz{
+    .no-quiz {
       font-size: 24px;
       text-align: center;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .message {
-    margin-top: 35px;
-    color: rgb(25, 131, 25);
-    font-weight: 600;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 18px;
-  }
+      margin-top: 35px;
+      color: rgb(25, 131, 25);
+      font-weight: 600;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 18px;
+    }
 
-    @media only screen and (max-width:768px) {
-      .quiz-cards{
+    .quiz-head {
+      margin: 15px 0px 0px 15%;
+      font-size: 20px;
+      font-weight: 500;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+    }
+
+    hr {
+      margin: auto 15%;
+      border: 3px solid rgb(0, 0, 0);
+    }
+
+    @media only screen and (max-width: 768px) {
+      .quiz-cards {
         width: 100%;
         display: grid;
         justify-content: left;
         align-content: center;
       }
-      .quiz-cards .card{
+
+      .quiz-cards .card {
         width: 80%;
         padding: 8px;
-        margin: auto 25px;
+        margin: 10px 25px;
       }
+
+      .quiz-head {
+        margin: 8px 0px 0px 5%;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      hr {
+        margin: auto 5%;
+        border: 1px solid rgb(0, 0, 0);
+      }
+
     }
   </style>
 </head>
@@ -83,28 +118,90 @@
     </div>
   </header>
   {% if not quiz %}
-  <div class="no-quiz ">
-    No Ongoing Quiz Challenges
-  </div>
+  <div class="no-quiz">No Quiz Challenges</div>
   {% endif %}
-
-  <div class="quiz-cards">
-    {% for quiz in quiz %}
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">{{ quiz.quiz_name}}</h5>
-        <div class="date">
-          Start Date {{ quiz.start_date }}
-          <br>
-          End Date {{ quiz.end_date }}
+  <div class="quiz">
+    <div class="on-going">
+      <div class="quiz-head">
+        On Going Quiz Challenges
+      </div>
+      <hr />
+      <div class="quiz-cards">
+        {% for quiz in quiz %}
+        {% if quiz.on_going_quiz == True %}
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ quiz.quiz_name}}</h5>
+            <div class="date">
+              Start Date {{ quiz.start_date }}
+              <br />
+              End Date {{ quiz.end_date }}
+            </div>
+            <a href="/start_quiz/{{ quiz.id }}/{{ s_id }}" class="btn btn-danger" style="margin-top: 15px">Start
+              Quiz</a>
+          </div>
         </div>
-        <a href="/start_quiz/{{ quiz.id }}/{{ s_id }}" class="btn btn-danger" style="margin-top: 15px;">Start Quiz</a>
+        {% endif %}
+        {% endfor %}
       </div>
     </div>
-    {% endfor %}
+
+    <div class="upcoming">
+      <div class="quiz-head">
+        Upcoming Quiz Challenges
+      </div>
+      <hr />
+      <div class="quiz-cards">
+        {% for quiz in quiz %}
+        {% if quiz.up_coming_quiz == True %}
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ quiz.quiz_name}}</h5>
+            <div class="date">
+              Start Date {{ quiz.start_date }}
+              <br />
+              End Date {{ quiz.end_date }}
+            </div>
+            <a href="/start_quiz/{{ quiz.id }}/{{ s_id }}" class="btn btn-danger disabled" style="margin-top: 15px">Start
+              Quiz</a>
+          </div>
+        </div>
+        
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="previous">
+      <div class="quiz-head">
+        Previous Quiz Challenges
+      </div>
+      <hr />
+      <div class="quiz-cards">
+        {% for quiz in quiz %}
+        {% if quiz.previous_quiz == True %}
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ quiz.quiz_name}}</h5>
+            <div class="date">
+              Start Date {{ quiz.start_date }}
+              <br />
+              End Date {{ quiz.end_date }}
+            </div>
+            <a href="/start_quiz/{{ quiz.id }}/{{ s_id }}" class="btn btn-danger disabled" style="margin-top: 15px">Start
+              Quiz</a>
+          </div>
+        </div>
+        
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
   </div>
+
+
   <div class="message">
-    <p class="text-center">{{ message }} </p>
+    <p class="text-center">{{ message }}</p>
   </div>
 </body>
 

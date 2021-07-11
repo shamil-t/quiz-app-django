@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.utils import timezone
 # Create your models here.
 
 class User_Model(models.Model):
@@ -15,6 +16,24 @@ class Quiz_Model(models.Model):
   quiz_type = models.IntegerField(default=0)
   start_date = models.DateTimeField()
   end_date = models.DateTimeField()
+
+  def on_going_quiz(self):
+    if self.end_date >= timezone.now() :
+      return True
+    else :
+      return False
+
+  def up_coming_quiz(self):
+    if self.start_date > timezone.now() :
+      return True
+    else :
+      return False
+  
+  def previous_quiz(self):
+    if self.end_date < timezone.now() :
+      return True
+    else :
+      return False
 
   def __str__(self):
       return str(self.id)
