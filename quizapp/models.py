@@ -34,9 +34,6 @@ class Quiz_Model(models.Model):
       return True
     else :
       return False
-  
-  def is_attended(self):
-    pass
 
   def __str__(self):
       return str(self.id)
@@ -47,8 +44,9 @@ class Quiz_result(models.Model):
   result = models.IntegerField(default=0)
 
   def get_all_results(self):
-    s_name = User_Model.objects.get(id = self.s_id).user_name
-    reg_no = User_Model.objects.get(id = self.s_id).reg_no
+    User = User_Model.objects.get(id = self.s_id)
+    s_name = User.user_name
+    reg_no = User.reg_no
     q_name = Quiz_Model.objects.get(id = self.quiz_type).quiz_name
 
     result = {
