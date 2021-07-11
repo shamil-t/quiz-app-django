@@ -1,5 +1,5 @@
-from django.http import HttpResponse, Http404
-from django.shortcuts import render
+from django.http import HttpResponse, Http404,HttpResponseRedirect
+from django.shortcuts import redirect, render
 from .models import User_Model, Quiz_Model, Quiz_result
 
 import requests
@@ -92,7 +92,7 @@ def add_quiz(request):
                       start_date=s_date, end_date=e_date)
     Quiz.save()
 
-    msg = 'Quiz Added Succesfully...!'
+    msg = True
     return render(request, 'college.html', {'message': msg})
 
 
@@ -102,33 +102,42 @@ def start_quiz(request, id, s_id):
     title = Quiz.quiz_name
     q_id = Quiz.quiz_type
 
-    url = 'https://opentdb.com/api.php?amount=10&category=' + \
-        str(q_id)+'&difficulty=medium&type=multiple'
-    data = requests.get(url)
-    data_json = data.json()
-    question_set = data_json['results']
+    q_result = Quiz_result.objects.all()
+    if q_result.filter(s_id=s_id).exists() and q_result.get(s_id=s_id).quiz_type == id:
+        context = {
+            'quiz':Quiz_Model.objects.all(),
+            's_id':s_id,
+            'attend': True
+        }
+        return render(request, 'quiz_home.html', context)
+    else:
+        url = 'https://opentdb.com/api.php?amount=10&category=' + \
+            str(q_id)+'&type=multiple'
+        data = requests.get(url)
+        data_json = data.json()
+        question_set = data_json['results']
 
-    questions = []
-    options = []
-    answer = []
+        questions = []
+        options = []
+        answer = []
 
-    for i in range(len(question_set)):
-        questions.append(question_set[i]['question'])
-        answer.append(question_set[i]['correct_answer'])
-        option = question_set[i]['incorrect_answers']
-        option.append(question_set[i]['correct_answer'])
-        random.shuffle(option)
-        options.append(option)
+        for i in range(len(question_set)):
+            questions.append(question_set[i]['question'])
+            answer.append(question_set[i]['correct_answer'])
+            option = question_set[i]['incorrect_answers']
+            option.append(question_set[i]['correct_answer'])
+            random.shuffle(option)
+            options.append(option)
 
-    DATA = {
-        'questions': questions,
-        'options': options,
-        'answer': answer
-    }
+        DATA = {
+            'questions': questions,
+            'options': options,
+            'answer': answer
+        }
 
-    DATA_JSON = dumps(DATA)
+        DATA_JSON = dumps(DATA)
 
-    return render(request, 'start_quiz.html', {'data': DATA_JSON, 'title': title, 'id': id, 's_id': s_id})
+        return render(request, 'start_quiz.html', {'data': DATA_JSON, 'title': title, 'id': id, 's_id': s_id})
 
 
 def quiz_result(request, q_id, s_id):
@@ -136,7 +145,7 @@ def quiz_result(request, q_id, s_id):
     time = request.POST['time']
 
     Quiz = Quiz_Model.objects.all()
-    q = Quiz_result.objects.get(quiz_type=q_id)
+    q = Quiz_result.objects.get(s_id=s_id)
     Quiz_name = Quiz_Model.objects.get(id=q_id).quiz_name
     Std_name = User_Model.objects.get(id=s_id)
 
@@ -150,9 +159,9 @@ def quiz_result(request, q_id, s_id):
             's_name': Std_name,
             'time': time
         }
-        return render(request, 'result.html',context)
+        return render(request, 'result.html', context)
     else:
-        return render(request, 'quiz_home.html', {'quiz': Quiz, 's_id': s_id,'message':'You already Attended The Quiz Try new One'})
+        return render(request, 'quiz_home.html', {'quiz': Quiz, 's_id': s_id, 'message': 'You already Attended The Quiz Try new One'})
 
 
 def student_results(request):

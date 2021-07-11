@@ -34,6 +34,9 @@ class Quiz_Model(models.Model):
       return True
     else :
       return False
+  
+  def is_attended(self):
+    pass
 
   def __str__(self):
       return str(self.id)
