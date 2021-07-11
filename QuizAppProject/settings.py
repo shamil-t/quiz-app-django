@@ -14,7 +14,6 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['shamil-quiz-app-django.herokuapp.com','localhost']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -25,7 +24,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'quizapp'
 ]
 
 MIDDLEWARE = [
