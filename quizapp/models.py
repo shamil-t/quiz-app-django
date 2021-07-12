@@ -18,7 +18,7 @@ class Quiz_Model(models.Model):
   end_date = models.DateTimeField()
 
   def on_going_quiz(self):
-    if self.end_date >= timezone.now() :
+    if self.end_date >= timezone.now() and self.start_date <= timezone.now():
       return True
     else :
       return False
